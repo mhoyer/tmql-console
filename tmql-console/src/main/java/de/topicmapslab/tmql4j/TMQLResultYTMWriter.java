@@ -5,7 +5,7 @@ import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlWriter;
 import de.topicmapslab.majortom.remoting.contracts.dto.tmdm.*;
 import de.topicmapslab.majortom.remoting.converter.dto.tmdm.QueryConverter;
-import de.topicmapslab.tmql4j.resultprocessing.model.IResultSet;
+import de.topicmapslab.tmql4j.components.processor.results.IResultSet;
 
 import java.io.PrintStream;
 import java.io.StringWriter;

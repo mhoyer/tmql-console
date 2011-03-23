@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>de.topicmapslab</groupId>
-	<artifactId>TMQLConsole</artifactId>
-	<version>0.2.0</version>
+    <groupId>de.topicmapslab</groupId>
+    <artifactId>TMQLConsole</artifactId>
+    <version>0.2.1-SNAPSHOT</version>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/libs</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
-									<includes>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
                                         <include>tmql.sh</include>
                                         <include>tmql.cmd</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
@@ -67,26 +67,26 @@
                     </archive>
                 </configuration>
             </plugin>
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
-	<repositories>
-		<repository>
-			<id>TMLab</id>
-			<name>Topic Maps Lab</name>
-			<url>http://maven.topicmapslab.de/public</url>
-		</repository>
-		<repository>
-			<id>tmapi</id>
-			<url>http://www.tmapi.org/maven-repository</url>
-		</repository>
-		<repository>
-			<id>tmapi-snapshots</id>
-			<url>http://www.tmapi.org/maven-repository/snapshots</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>TMLab</id>
+            <name>Topic Maps Lab</name>
+            <url>http://maven.topicmapslab.de/public</url>
+        </repository>
+        <repository>
+            <id>tmapi</id>
+            <url>http://www.tmapi.org/maven-repository</url>
+        </repository>
+        <repository>
+            <id>tmapi-snapshots</id>
+            <url>http://www.tmapi.org/maven-repository/snapshots</url>
+        </repository>
+    </repositories>
 
-	<dependencies>
+    <dependencies>
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
@@ -97,36 +97,62 @@
             <artifactId>tmapi</artifactId>
             <version>2.0.3-SNAPSHOT</version>
         </dependency>
-		<dependency>
-			<groupId>de.topicmapslab.majortom</groupId>
-			<artifactId>majortom-inMemory</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>de.topicmapslab.tmql4j</groupId>
-			<artifactId>tmql4j</artifactId>
-			<version>2.6.4-SNAPSHOT</version>
-		</dependency>
         <dependency>
-            <groupId>de.topicmapslab.tmql4j-plugins</groupId>
-            <artifactId>tmql-draft-2010</artifactId>
-            <version>1.0.2</version>
+            <groupId>de.topicmapslab.majortom</groupId>
+            <artifactId>majortom-inMemory</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.topicmapslab.tmql4j-plugins</groupId>
-            <artifactId>tmql4j-tmml-extension</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-draft2010</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-nop</artifactId>
-			<version>1.6.1</version>
-		</dependency>
+        <dependency>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-path</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-flwr</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-select</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-update</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-insert</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-delete</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.tmql4j</groupId>
+            <artifactId>tmql4j-merge</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.6.1</version>
+        </dependency>
         <dependency>
             <groupId>yamlbeans</groupId>
             <artifactId>yamlbeans</artifactId>
@@ -148,5 +174,5 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/majortom-bridge-contracts.jar</systemPath>
         </dependency>
-	</dependencies>
+    </dependencies>
 </project>

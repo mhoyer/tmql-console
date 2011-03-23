@@ -1,10 +1,10 @@
 package de.topicmapslab.tmql4j;
 
-import de.topicmapslab.tmql4j.common.model.query.IQuery;
-import de.topicmapslab.tmql4j.resultprocessing.core.ctm.CTMResult;
-import de.topicmapslab.tmql4j.resultprocessing.core.xml.XMLResult;
-import de.topicmapslab.tmql4j.resultprocessing.model.IResultSet;
-import de.topicmapslab.tmql4j.resultprocessing.model.ResultType;
+import de.topicmapslab.tmql4j.components.processor.results.IResultSet;
+import de.topicmapslab.tmql4j.components.processor.results.ResultType;
+import de.topicmapslab.tmql4j.flwr.components.processor.results.ctm.CTMResult;
+import de.topicmapslab.tmql4j.flwr.components.processor.results.xml.XMLResult;
+import de.topicmapslab.tmql4j.query.IQuery;
 
 import java.io.PrintStream;
 

@@ -1,9 +1,12 @@
 package de.topicmapslab.tmql4j;
 
-import de.topicmapslab.tmql4j.common.core.runtime.TMQLRuntimeFactory;
-import de.topicmapslab.tmql4j.common.model.query.IQuery;
-import de.topicmapslab.tmql4j.common.model.runtime.ITMQLRuntime;
-import jline.*;
+import de.topicmapslab.tmql4j.components.processor.runtime.ITMQLRuntime;
+import de.topicmapslab.tmql4j.components.processor.runtime.TMQLRuntimeFactory;
+import de.topicmapslab.tmql4j.query.IQuery;
+import jline.ArgumentCompletor;
+import jline.Completor;
+import jline.ConsoleReader;
+import jline.SimpleCompletor;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
@@ -40,7 +43,7 @@ public class QueryConsole {
 
         importTopicMap(topicMapFile);
 
-        runtime = TMQLRuntimeFactory.newFactory().newRuntime(topicMapSystem, topicMap);
+        runtime = TMQLRuntimeFactory.newFactory().newRuntime();
     }
 
     private void initJLine() throws IOException {
@@ -152,7 +155,7 @@ public class QueryConsole {
         output.println(String.format("[EnteredQuery = %s]", q));
         
         try {
-            IQuery query = runtime.run(q);
+            IQuery query = runtime.run(topicMap, q);
             resultInterpreter.printResults(query);
         }
         catch (Exception ex)
