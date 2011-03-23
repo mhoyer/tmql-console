@@ -26,7 +26,13 @@ public class SimpleClient {
 
         try {
             QueryConsole console = new QueryConsole(topicMapFile);
-            console.open();
+
+            if (args.length == 2) {
+                console.runQuery(args[1]);
+            }
+            else {
+                console.open();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -34,7 +40,7 @@ public class SimpleClient {
 
     public static void showHelp()
     {
-        puts("Usage: SimpleClient <Path-to-TopicMap-file> <TMQL Query>");
+        puts("Usage: SimpleClient <Path-to-TopicMap-file> [<TMQL Query>]");
     }
 
     public static void puts(String message, Object... args)
