@@ -3,8 +3,7 @@ package de.topicmapslab.tmql4j;
 import de.topicmapslab.tmql4j.common.core.runtime.TMQLRuntimeFactory;
 import de.topicmapslab.tmql4j.common.model.query.IQuery;
 import de.topicmapslab.tmql4j.common.model.runtime.ITMQLRuntime;
-import jline.ConsoleReader;
-import jline.SimpleCompletor;
+import jline.*;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
@@ -95,7 +94,7 @@ public class QueryConsole {
 
         reader = new ConsoleReader();
         reader.setBellEnabled(false);
-        reader.addCompletor(new SimpleCompletor(keywords));
+        reader.addCompletor(new ArgumentCompletor(new Completor[] {new SimpleCompletor(keywords)}));
     }
 
     private void importTopicMap(File topicMapFile) throws TMAPIException, IOException {
