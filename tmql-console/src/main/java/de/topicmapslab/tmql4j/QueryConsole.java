@@ -2,6 +2,8 @@ package de.topicmapslab.tmql4j;
 
 import de.topicmapslab.tmql4j.components.processor.runtime.ITMQLRuntime;
 import de.topicmapslab.tmql4j.components.processor.runtime.TMQLRuntimeFactory;
+import de.topicmapslab.tmql4j.draft2010.components.processor.runtime.TmqlRuntime;
+import de.topicmapslab.tmql4j.path.components.processor.runtime.TmqlRuntime2007;
 import de.topicmapslab.tmql4j.query.IQuery;
 import jline.ArgumentCompletor;
 import jline.Completor;
@@ -19,6 +21,8 @@ import org.tmapix.io.XTMTopicMapReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: mhoyer
@@ -28,6 +32,7 @@ import java.io.PrintStream;
 public class QueryConsole {
     private String prefix;
     private TopicMap topicMap;
+    private Map<String, ITMQLRuntime> runtimes;
     private ITMQLRuntime runtime;
     private ResultInterpreter resultInterpreter;
     private TopicMapSystem topicMapSystem;
@@ -43,7 +48,15 @@ public class QueryConsole {
 
         importTopicMap(topicMapFile);
 
-        runtime = TMQLRuntimeFactory.newFactory().newRuntime();
+        runtimes = new HashMap<String, ITMQLRuntime>();
+        registerRuntime(TmqlRuntime.TMQL_2010);
+        registerRuntime(TmqlRuntime2007.TMQL_2007);
+        toggleRuntime(TmqlRuntime.TMQL_2010);
+    }
+
+    private void registerRuntime(String runtimeVersion) {
+        if (runtimes.containsKey(runtimeVersion)) return;
+        runtimes.put(runtimeVersion, TMQLRuntimeFactory.newFactory().newRuntime(runtimeVersion));
     }
 
     private void initJLine() throws IOException {
@@ -132,6 +145,7 @@ public class QueryConsole {
                 if (trimedLine.matches("(e|exit|q|uit)")) break;
                 if (trimedLine.matches("(\\?|h|help)")) { printCommands(); continue; }
                 if (trimedLine.matches("(s|stats)")) { printStats(); continue; }
+                if (trimedLine.matches("(r|runtime)\\s+.*")) { toggleRuntime(trimedLine.replaceAll("(r|runtime)\\s+", "")); continue; }
             }
 
             q = q.concat(line + "\n");
@@ -144,6 +158,18 @@ public class QueryConsole {
 
             q = "";
         }
+    }
+
+    private void toggleRuntime(String version) {
+        for(String registeredVersion : runtimes.keySet()) {
+            if (version.matches(registeredVersion)) {
+                runtime = runtimes.get(registeredVersion);
+                output.println(String.format(">> Set current TMQL runtime to %s.", registeredVersion));
+                return;
+            }
+        }
+
+        output.println(String.format(">> WARNING: Could not set TMQL runtime for '%s'.", version));
     }
 
     private void printStats() {
@@ -169,6 +195,10 @@ public class QueryConsole {
         output.println(String.format("%20s  %s", "h(elp)|?", "Shows this screen"));
         output.println(String.format("%20s  %s", "e(xit)|q(uit)", "Exits the console"));
         output.println(String.format("%20s  %s", "s(tats)", "Shows the statistics for loaded Topic Map"));
+        output.println(String.format("%20s  %s", "r(untime) <version>", "Changes the TMQL runtime."));
+        for(String runtimeVersion : runtimes.keySet()) {
+            output.println(String.format("                             > %s", runtimeVersion));
+        }
 
         output.println(String.format("\n%s",   "An entered query should be finalized with ; to execute it.\n"));
     }
