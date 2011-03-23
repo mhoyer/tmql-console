@@ -1,6 +1,5 @@
 package de.topicmapslab.tmql4j;
 
-import de.topicmapslab.tmql4j.common.context.TMQLRuntimeProperties;
 import de.topicmapslab.tmql4j.common.core.runtime.TMQLRuntimeFactory;
 import de.topicmapslab.tmql4j.common.model.query.IQuery;
 import de.topicmapslab.tmql4j.common.model.runtime.ITMQLRuntime;
@@ -36,10 +35,6 @@ public class QueryConsole {
         importTopicMap(topicMapFile);
 
         runtime = TMQLRuntimeFactory.newFactory().newRuntime(topicMapSystem, topicMap);
-        runtime.setEnvironmentMap(topicMapSystem.createTopicMap("http://foo.de/env"));
-        TMQLRuntimeProperties props = runtime.getProperties();
-        //props.enableMaterializeMetaModel(true);
-        props.put(TMQLRuntimeProperties.MATERIALIZE_META_MODEL, false);
     }
 
     private void importTopicMap(File topicMapFile) throws TMAPIException, IOException {
@@ -79,7 +74,7 @@ public class QueryConsole {
             q = q.concat(line);
             if (!line.trim().endsWith(";")) continue;
 
-            q = q.substring(0, q.lastIndexOf(";")+1);
+            q = q.substring(0, q.lastIndexOf(";"));
             runQuery(q);
 
             q = "";
@@ -88,6 +83,8 @@ public class QueryConsole {
 
     public void runQuery(String q)
     {
+        System.out.println(String.format("Running query:\n%s", q));
+        
         try {
             IQuery query = runtime.run(q);
             resultInterpreter.printResults(query);

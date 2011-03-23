@@ -25,7 +25,8 @@ public class SimpleClient {
         }
 
         try {
-            new QueryConsole(topicMapFile).open();
+            QueryConsole console = new QueryConsole(topicMapFile);
+            console.open();
         } catch (Exception e) {
             e.printStackTrace();
         }
