@@ -41,10 +41,8 @@ public class QueryConsole {
         output.print(String.format("Importing %s ...", topicMapFile.getName()));
         String fileName = topicMapFile.getName().toLowerCase();
 
-        topicMapSystem = TopicMapSystemFactory.newInstance()
-                .newTopicMapSystem();
-        topicMap = topicMapSystem
-                .createTopicMap(topicMapFile.toURI().toString());
+        topicMapSystem = TopicMapSystemFactory.newInstance().newTopicMapSystem();
+        topicMap = topicMapSystem.createTopicMap(topicMapFile.toURI().toString());
 
         TopicMapReader tmReader;
         if(fileName.endsWith(".ltm")) {
