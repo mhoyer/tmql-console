@@ -1,5 +1,8 @@
 package de.topicmapslab.tmql4j;
 
+import de.topicmapslab.tmql4j.draft2010.components.processor.runtime.TmqlRuntime;
+import de.topicmapslab.tmql4j.path.components.processor.runtime.TmqlRuntime2007;
+
 import java.io.File;
 
 /**
@@ -26,6 +29,12 @@ public class Application {
 
         try {
             QueryConsole console = new QueryConsole(System.out, topicMapFile);
+            console.registerRuntime(TmqlRuntime.TMQL_2010);
+            console.registerRuntime(TmqlRuntime2007.TMQL_2007);
+
+            String initialRuntime = System.getenv("TMQL_CONSOLE_RUNTIME");
+            if (initialRuntime == null || initialRuntime.trim().length() == 0) initialRuntime = TmqlRuntime.TMQL_2010;
+            if (!console.toggleRuntime(initialRuntime)) return;
 
             if (args.length > 1) {
                 String query = "";

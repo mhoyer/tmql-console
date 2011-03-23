@@ -2,8 +2,6 @@ package de.topicmapslab.tmql4j;
 
 import de.topicmapslab.tmql4j.components.processor.runtime.ITMQLRuntime;
 import de.topicmapslab.tmql4j.components.processor.runtime.TMQLRuntimeFactory;
-import de.topicmapslab.tmql4j.draft2010.components.processor.runtime.TmqlRuntime;
-import de.topicmapslab.tmql4j.path.components.processor.runtime.TmqlRuntime2007;
 import de.topicmapslab.tmql4j.query.IQuery;
 import jline.ArgumentCompletor;
 import jline.Completor;
@@ -50,12 +48,9 @@ public class QueryConsole {
         importTopicMap(topicMapFile);
 
         runtimes = new HashMap<String, ITMQLRuntime>();
-        registerRuntime(TmqlRuntime.TMQL_2010);
-        registerRuntime(TmqlRuntime2007.TMQL_2007);
-        toggleRuntime(TmqlRuntime.TMQL_2010);
     }
 
-    private void registerRuntime(String runtimeVersion) {
+    public void registerRuntime(String runtimeVersion) {
         if (runtimes.containsKey(runtimeVersion)) return;
         runtimes.put(runtimeVersion, TMQLRuntimeFactory.newFactory().newRuntime(runtimeVersion));
     }
@@ -179,16 +174,18 @@ public class QueryConsole {
         }
     }
 
-    private void toggleRuntime(String version) {
+    public boolean toggleRuntime(String version) {
         for(String registeredVersion : runtimes.keySet()) {
             if (version.matches(registeredVersion)) {
                 runtime = runtimes.get(registeredVersion);
                 output.println(String.format(">> Set current TMQL runtime to %s.", registeredVersion));
-                return;
+                return true;
             }
         }
 
         output.println(String.format(">> WARNING: Could not set TMQL runtime for '%s'.", version));
+        
+        return false;
     }
 
     private void printStats() {
