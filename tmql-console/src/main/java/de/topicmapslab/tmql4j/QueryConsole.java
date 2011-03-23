@@ -138,7 +138,7 @@ public class QueryConsole {
 
         String q = "";
         String line;
-        while((line = reader.readLine(String.format("%s %s ", prefix, q.isEmpty() ? ">" : "|"))) != null)
+        while((line = reader.readLine(String.format("%s@%s %s ", runtime.getLanguageName(), prefix, q.isEmpty() ? ">" : "|"))) != null)
         {
             if (q.isEmpty()) {
                 String trimedLine = line.trim();
