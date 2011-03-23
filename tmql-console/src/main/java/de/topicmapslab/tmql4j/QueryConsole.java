@@ -4,6 +4,7 @@ import de.topicmapslab.tmql4j.common.core.runtime.TMQLRuntimeFactory;
 import de.topicmapslab.tmql4j.common.model.query.IQuery;
 import de.topicmapslab.tmql4j.common.model.runtime.ITMQLRuntime;
 import jline.ConsoleReader;
+import jline.SimpleCompletor;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
@@ -13,7 +14,9 @@ import org.tmapix.io.LTMTopicMapReader;
 import org.tmapix.io.TopicMapReader;
 import org.tmapix.io.XTMTopicMapReader;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * User: mhoyer
@@ -31,8 +34,7 @@ public class QueryConsole {
 
     public QueryConsole(PrintStream output, File topicMapFile) throws TMAPIException, IOException {
         this.output = output;
-        reader = new ConsoleReader();
-        reader.setBellEnabled(false);
+        initJLine();
 
         resultInterpreter = new ResultInterpreter(output);
         prefix = topicMapFile.getName();
@@ -40,6 +42,60 @@ public class QueryConsole {
         importTopicMap(topicMapFile);
 
         runtime = TMQLRuntimeFactory.newFactory().newRuntime(topicMapSystem, topicMap);
+    }
+
+    private void initJLine() throws IOException {
+        String[] keywords = new String[] {
+                // axis
+                "topic::",
+                "indicators" ,
+                "characteristics", "atomify",
+                "types", "instances",
+                "supertypes", "subtypes",
+                "players", "roles",
+                "traverse",
+                "scope", "reifier",
+
+                // prefixes
+                "tm:", "xsd:", "tmql:", "fn:", "dc:",
+
+                //functions
+                "fn:string-concat",
+                "fn:length",
+                "fn:string-lt",
+                "fn:string-leq",
+                "fn:string-geq",
+                "fn:string-gt",
+                "fn:regexp",
+                "fn:substring",
+                "fn:has-datatype",
+                "fn:slice",
+                "fn:count",
+                "fn:uniq",
+                "fn:concat",
+                "fn:except",
+                "fn:compare",
+                "fn:zigzag",
+
+                // topicReferences
+                "tm:subject",
+                "tm:name",
+                "tm:occurrence",
+                "tm:subclass-of",
+                "tm:subclass",
+                "tm:superclass",
+                "tm:type-instance",
+                "tm:instance",
+                "tm:type",
+
+                // environment clauses
+                "%prefix",
+                "%pragma"
+        };
+
+        reader = new ConsoleReader();
+        reader.setBellEnabled(false);
+        reader.addCompletor(new SimpleCompletor(keywords));
     }
 
     private void importTopicMap(File topicMapFile) throws TMAPIException, IOException {
