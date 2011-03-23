@@ -23,7 +23,7 @@ public class ResultInterpreter {
     public void printResults(IQuery query) {
         String resultType = query.getResults().getResultType();
 
-        outputStream.println(String.format("Result type: %s", resultType));
+        outputStream.println(String.format("[ResultType = %s]\n", resultType));
 
         if (resultType.equalsIgnoreCase(ResultType.XML.toString())) {
             outputStream.println(XMLResult.class.cast(query.getResults()).resultsAsMergedXML());
@@ -40,8 +40,10 @@ public class ResultInterpreter {
 
     private void printComplexResults(IQuery query) {
         IResultSet<?> set = query.getResults();
-        new TMQLResultYTMWriter(outputStream).write(set);
+        TMQLResultYTMWriter ytmWriter = new TMQLResultYTMWriter(outputStream);
+        ytmWriter.write(set);
 
-        outputStream.println(String.format("Found: %d results", set.size()));
+        outputStream.println();
+        outputStream.println(String.format("[FoundResults = %d]", set.size()));
     }
 }

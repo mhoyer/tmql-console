@@ -95,7 +95,7 @@ public class QueryConsole {
 
     public void runQuery(String q)
     {
-        output.println(String.format("Running query:\n%s", q));
+        output.println(String.format("[EnteredQuery = %s]", q));
         
         try {
             IQuery query = runtime.run(q);
