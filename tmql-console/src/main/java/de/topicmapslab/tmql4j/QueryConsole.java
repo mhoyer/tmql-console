@@ -2,6 +2,7 @@ package de.topicmapslab.tmql4j;
 
 import de.topicmapslab.tmql4j.components.processor.runtime.ITMQLRuntime;
 import de.topicmapslab.tmql4j.components.processor.runtime.TMQLRuntimeFactory;
+import de.topicmapslab.tmql4j.exception.TMQLGeneratorException;
 import de.topicmapslab.tmql4j.query.IQuery;
 import jline.ArgumentCompletor;
 import jline.Completor;
@@ -37,6 +38,7 @@ public class QueryConsole {
     private TopicMapSystem topicMapSystem;
     private PrintStream output;
     private ConsoleReader reader;
+    private String lastQuery = null;
 
     public QueryConsole(PrintStream output, File topicMapFile) throws TMAPIException, IOException {
         this.output = output;
@@ -141,6 +143,7 @@ public class QueryConsole {
                 if (trimedLine.matches("(e|exit|q|uit)")) break;
                 if (trimedLine.matches("(\\?|h|help)")) { printCommands(); continue; }
                 if (trimedLine.matches("(s|stats)")) { printStats(); continue; }
+                if (trimedLine.matches("(t|tree)")) { printQueryTree(); continue; }
                 if (trimedLine.matches("(r|runtime)\\s+.*")) { toggleRuntime(trimedLine.replaceAll("(r|runtime)\\s+", "")); continue; }
                 if (trimedLine.matches("(x|external)\\s+.*")) { executeFromFile(trimedLine.replaceAll("(x|external)\\s+", "")); continue; }
             }
@@ -151,6 +154,7 @@ public class QueryConsole {
             if (q.trim().length() > 1) {           
                 q = q.substring(0, q.lastIndexOf(";"));
                 runQuery(q);
+                lastQuery = q;
             }
 
             q = "";
@@ -187,7 +191,32 @@ public class QueryConsole {
     }
 
     private void printStats() {
-        output.println(String.format("  * Topics: %d\n  * Associations: %d\n", topicMap.getTopics().size(), topicMap.getAssociations().size()));
+        output.println(String.format("  * Topics: %d\n  * Associations: %d\n",
+                                          topicMap.getTopics().size(),
+                                          topicMap.getAssociations().size()));
+    }
+
+    private void printQueryTree() {
+        if (lastQuery == null) {
+            output.println("No query entered yet.");
+            return;
+        }
+
+        try {
+            StringBuilder qtsb = new StringBuilder();
+            runtime.parse(lastQuery).toStringTree(qtsb);
+            output.println(String.format("Query tree for:\n%s", lastQuery));
+            output.println(qtsb.toString());
+        }
+        catch (TMQLGeneratorException ex)
+        {
+            output.println(ex.toString());
+            output.println("You might need to switch the TMQL engine using the 'runtime' command.");
+        }
+        catch (Exception ex)
+        {
+            output.println(ex.toString());
+        }
     }
 
     public void runQuery(String q)
@@ -198,6 +227,11 @@ public class QueryConsole {
             IQuery query = runtime.run(topicMap, q);
             resultInterpreter.printResults(query);
         }
+        catch (TMQLGeneratorException ex)
+        {
+            output.println(ex.toString());
+            output.println("You might need to switch the TMQL engine using the 'runtime' command.");
+        }
         catch (Exception ex)
         {
             output.println(ex.toString());
@@ -206,9 +240,10 @@ public class QueryConsole {
 
     public void printCommands()
     {
-        output.println(String.format("%-28s : %s", "h, help, ?", "Shows this screen"));
-        output.println(String.format("%-28s : %s", "e, exit, q, quit", "Exits the console"));
-        output.println(String.format("%-28s : %s", "s, stats", "Shows the statistics for loaded Topic Map"));
+        output.println(String.format("%-28s : %s", "h, help, ?", "Shows this screen."));
+        output.println(String.format("%-28s : %s", "e, exit, q, quit", "Exits the console."));
+        output.println(String.format("%-28s : %s", "s, stats", "Shows the statistics for loaded Topic Map."));
+        output.println(String.format("%-28s : %s", "t, tree", "Prints the parsed tree for the last query."));
         output.println(String.format("%-28s : %s", "x, external <queryfile>", "Loads and executes content of queryfile."));
         output.println(String.format("%-28s : %s", "r, runtime <version>", "Changes the TMQL runtime."));
 
