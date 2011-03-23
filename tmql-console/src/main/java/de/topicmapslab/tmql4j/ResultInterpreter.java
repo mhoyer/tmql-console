@@ -3,7 +3,6 @@ package de.topicmapslab.tmql4j;
 import de.topicmapslab.tmql4j.common.model.query.IQuery;
 import de.topicmapslab.tmql4j.resultprocessing.core.ctm.CTMResult;
 import de.topicmapslab.tmql4j.resultprocessing.core.xml.XMLResult;
-import de.topicmapslab.tmql4j.resultprocessing.model.IResult;
 import de.topicmapslab.tmql4j.resultprocessing.model.IResultSet;
 import de.topicmapslab.tmql4j.resultprocessing.model.ResultType;
 
@@ -27,12 +26,12 @@ public class ResultInterpreter {
         outputStream.println(String.format("Result type: %s", resultType));
 
         if (resultType.equalsIgnoreCase(ResultType.XML.toString())) {
-            outputStream.println(XMLResult.class.cast(query).resultsAsMergedXML());
+            outputStream.println(XMLResult.class.cast(query.getResults()).resultsAsMergedXML());
             return;
         }
 
         if (resultType.equalsIgnoreCase(ResultType.CTM.toString())) {
-            outputStream.println(CTMResult.class.cast(query).resultsAsMergedCTM());
+            outputStream.println(CTMResult.class.cast(query.getResults()).resultsAsMergedCTM());
             return;
         }
 
