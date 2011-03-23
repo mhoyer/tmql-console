@@ -121,5 +121,26 @@
 			<artifactId>slf4j-nop</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+        <dependency>
+            <groupId>yamlbeans</groupId>
+            <artifactId>yamlbeans</artifactId>
+            <version>1.04</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/yamlbeans-1.04.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.majortom</groupId>
+            <artifactId>majortom-bridge-common</artifactId>
+            <version>0.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/majortom-bridge-common.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.topicmapslab.majortom</groupId>
+            <artifactId>majortom-bridge-contracts</artifactId>
+            <version>0.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/majortom-bridge-contracts.jar</systemPath>
+        </dependency>
 	</dependencies>
 </project>
