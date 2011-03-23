@@ -25,7 +25,7 @@ public class Application {
         }
 
         try {
-            QueryConsole console = new QueryConsole(topicMapFile);
+            QueryConsole console = new QueryConsole(System.out, topicMapFile);
 
             if (args.length == 2) {
                 console.runQuery(args[1]);
@@ -46,10 +46,5 @@ public class Application {
     public static void puts(String message, Object... args)
     {
         System.out.println(String.format(message, args));
-    }
-
-    public static void put(String message, Object... args)
-    {
-        System.out.print(String.format(message, args));
     }
 }

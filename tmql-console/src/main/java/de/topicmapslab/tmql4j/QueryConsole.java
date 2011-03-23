@@ -12,10 +12,7 @@ import org.tmapix.io.LTMTopicMapReader;
 import org.tmapix.io.TopicMapReader;
 import org.tmapix.io.XTMTopicMapReader;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * User: mhoyer
@@ -26,10 +23,13 @@ public class QueryConsole {
     private String prefix;
     private TopicMap topicMap;
     private ITMQLRuntime runtime;
-    private ResultInterpreter resultInterpreter = new ResultInterpreter(System.out);
+    private ResultInterpreter resultInterpreter;
     private TopicMapSystem topicMapSystem;
+    private PrintStream output;
 
-    public QueryConsole(File topicMapFile) throws TMAPIException, IOException {
+    public QueryConsole(PrintStream output, File topicMapFile) throws TMAPIException, IOException {
+        this.output = output;
+        resultInterpreter = new ResultInterpreter(output);
         prefix = topicMapFile.getName();
 
         importTopicMap(topicMapFile);
@@ -38,7 +38,7 @@ public class QueryConsole {
     }
 
     private void importTopicMap(File topicMapFile) throws TMAPIException, IOException {
-        Application.put("Importing %s ...", topicMapFile.getName());
+        output.print(String.format("Importing %s ...", topicMapFile.getName()));
         String fileName = topicMapFile.getName().toLowerCase();
 
         topicMapSystem = TopicMapSystemFactory.newInstance()
@@ -56,11 +56,11 @@ public class QueryConsole {
         else tmReader = new XTMTopicMapReader(topicMap, topicMapFile);
 
         tmReader.read();
-        Application.puts("done!\n");
+        output.println("done!\n");
     }
 
     public void open() throws IOException {
-        Application.puts("Enter '?' for help.");
+        output.println("Enter '?' for help.");
 
         InputStreamReader converter = new InputStreamReader(System.in);
         BufferedReader in = new BufferedReader(converter);
@@ -68,7 +68,7 @@ public class QueryConsole {
         String q = "";
         while(true)
         {
-            Application.put("%s %s ", prefix, q.isEmpty() ? ">" : "|");
+            output.print(String.format("%s %s ", prefix, q.isEmpty() ? ">" : "|"));
             
             String line = in.readLine();
 
@@ -90,12 +90,12 @@ public class QueryConsole {
     }
 
     private void printStats() {
-        Application.puts("  * Topics: %d\n  * Associations: %d\n", topicMap.getTopics().size(), topicMap.getAssociations().size());
+        output.println(String.format("  * Topics: %d\n  * Associations: %d\n", topicMap.getTopics().size(), topicMap.getAssociations().size()));
     }
 
     public void runQuery(String q)
     {
-        System.out.println(String.format("Running query:\n%s", q));
+        output.println(String.format("Running query:\n%s", q));
         
         try {
             IQuery query = runtime.run(q);
@@ -103,17 +103,17 @@ public class QueryConsole {
         }
         catch (Exception ex)
         {
-            System.out.println(ex.toString());
+            output.println(ex.toString());
         }
     }
 
     public void printCommands()
     {
-        Application.puts("%20s  %s", "h(elp)|?", "Shows this screen");
-        Application.puts("%20s  %s", "e(xit)|q(uit)", "Exits the console");
-        Application.puts("%20s  %s", "s(tats)", "Shows the statistics for loaded Topic Map");
+        output.println(String.format("%20s  %s", "h(elp)|?", "Shows this screen"));
+        output.println(String.format("%20s  %s", "e(xit)|q(uit)", "Exits the console"));
+        output.println(String.format("%20s  %s", "s(tats)", "Shows the statistics for loaded Topic Map"));
 
-        Application.puts("\n%s",   "An entered query should be finalized with ; to execute it.\n");
+        output.println(String.format("\n%s",   "An entered query should be finalized with ; to execute it.\n"));
     }
 
 }
