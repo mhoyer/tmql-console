@@ -7,6 +7,7 @@ import jline.ArgumentCompletor;
 import jline.Completor;
 import jline.ConsoleReader;
 import jline.SimpleCompletor;
+import org.apache.commons.io.FileUtils;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
@@ -17,7 +18,6 @@ import org.tmapix.io.TopicMapReader;
 import org.tmapix.io.XTMTopicMapReader;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -164,11 +164,9 @@ public class QueryConsole {
             return;
         }
 
-        char[] buffer = new char[(int) file.length()];
-        
         try {
-            new FileReader(file).read(buffer, 0, (int) file.length());
-            runQuery(new String(buffer));
+            String query = FileUtils.readFileToString(file);
+            runQuery(query);
         } catch (IOException e) {
             e.printStackTrace();
         }
