@@ -3,6 +3,7 @@ package de.topicmapslab.tmql4j;
 import de.topicmapslab.tmql4j.common.core.runtime.TMQLRuntimeFactory;
 import de.topicmapslab.tmql4j.common.model.query.IQuery;
 import de.topicmapslab.tmql4j.common.model.runtime.ITMQLRuntime;
+import jline.ConsoleReader;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
@@ -26,9 +27,13 @@ public class QueryConsole {
     private ResultInterpreter resultInterpreter;
     private TopicMapSystem topicMapSystem;
     private PrintStream output;
+    private ConsoleReader reader;
 
     public QueryConsole(PrintStream output, File topicMapFile) throws TMAPIException, IOException {
         this.output = output;
+        reader = new ConsoleReader();
+        reader.setBellEnabled(false);
+
         resultInterpreter = new ResultInterpreter(output);
         prefix = topicMapFile.getName();
 
@@ -60,16 +65,10 @@ public class QueryConsole {
     public void open() throws IOException {
         output.println("Enter '?' for help.");
 
-        InputStreamReader converter = new InputStreamReader(System.in);
-        BufferedReader in = new BufferedReader(converter);
-
         String q = "";
-        while(true)
+        String line;
+        while((line = reader.readLine(String.format("%s %s ", prefix, q.isEmpty() ? ">" : "|"))) != null)
         {
-            output.print(String.format("%s %s ", prefix, q.isEmpty() ? ">" : "|"));
-            
-            String line = in.readLine();
-
             if (q.isEmpty()) {
                 String trimedLine = line.trim();
                 if (trimedLine.matches("(e|exit|q|uit)")) break;

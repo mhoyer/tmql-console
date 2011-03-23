@@ -87,11 +87,16 @@
 	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.tmapi</groupId>
-			<artifactId>tmapi</artifactId>
-			<version>2.0.3-SNAPSHOT</version>
-		</dependency>
+        <dependency>
+            <groupId>jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>0.9.94</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tmapi</groupId>
+            <artifactId>tmapi</artifactId>
+            <version>2.0.3-SNAPSHOT</version>
+        </dependency>
 		<dependency>
 			<groupId>de.topicmapslab.majortom</groupId>
 			<artifactId>majortom-inMemory</artifactId>
