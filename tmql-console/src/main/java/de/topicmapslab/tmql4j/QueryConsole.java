@@ -19,6 +19,7 @@ import org.tmapix.io.TopicMapReader;
 import org.tmapix.io.XTMTopicMapReader;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -146,6 +147,7 @@ public class QueryConsole {
                 if (trimedLine.matches("(\\?|h|help)")) { printCommands(); continue; }
                 if (trimedLine.matches("(s|stats)")) { printStats(); continue; }
                 if (trimedLine.matches("(r|runtime)\\s+.*")) { toggleRuntime(trimedLine.replaceAll("(r|runtime)\\s+", "")); continue; }
+                if (trimedLine.matches("(x|external)\\s+.*")) { executeFromFile(trimedLine.replaceAll("(x|external)\\s+", "")); continue; }
             }
 
             q = q.concat(line + "\n");
@@ -157,6 +159,23 @@ public class QueryConsole {
             }
 
             q = "";
+        }
+    }
+
+    private void executeFromFile(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            output.println(String.format(">> ERROR: File not found '%s'.", fileName));
+            return;
+        }
+
+        char[] buffer = new char[(int) file.length()];
+        
+        try {
+            new FileReader(file).read(buffer, 0, (int) file.length());
+            runQuery(new String(buffer));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -192,12 +211,14 @@ public class QueryConsole {
 
     public void printCommands()
     {
-        output.println(String.format("%20s  %s", "h(elp)|?", "Shows this screen"));
-        output.println(String.format("%20s  %s", "e(xit)|q(uit)", "Exits the console"));
-        output.println(String.format("%20s  %s", "s(tats)", "Shows the statistics for loaded Topic Map"));
-        output.println(String.format("%20s  %s", "r(untime) <version>", "Changes the TMQL runtime."));
+        output.println(String.format("%-28s : %s", "h, help, ?", "Shows this screen"));
+        output.println(String.format("%-28s : %s", "e, exit, q, quit", "Exits the console"));
+        output.println(String.format("%-28s : %s", "s, stats", "Shows the statistics for loaded Topic Map"));
+        output.println(String.format("%-28s : %s", "x, external <queryfile>", "Loads and executes content of queryfile."));
+        output.println(String.format("%-28s : %s", "r, runtime <version>", "Changes the TMQL runtime."));
+
         for(String runtimeVersion : runtimes.keySet()) {
-            output.println(String.format("                             > %s", runtimeVersion));
+            output.println(String.format("                                 * %s", runtimeVersion));
         }
 
         output.println(String.format("\n%s",   "An entered query should be finalized with ; to execute it.\n"));
