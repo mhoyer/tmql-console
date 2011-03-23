@@ -80,8 +80,10 @@ public class QueryConsole {
             q = q.concat(line);
             if (!line.trim().endsWith(";")) continue;
 
-            q = q.substring(0, q.lastIndexOf(";"));
-            runQuery(q);
+            if (q.trim().length() > 1) {           
+                q = q.substring(0, q.lastIndexOf(";"));
+                runQuery(q);
+            }
 
             q = "";
         }
