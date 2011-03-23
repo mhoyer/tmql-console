@@ -1,17 +1,14 @@
 package de.topicmapslab.tmql4j;
 
-import de.topicmapslab.tmql4j.common.core.exception.TMQLRuntimeException;
-import de.topicmapslab.tmql4j.common.utility.XmlSchemeDatatypes;
-import de.topicmapslab.tmql4j.resultprocessing.core.reduction.ReductionResultSet;
-import de.topicmapslab.tmql4j.resultprocessing.core.reduction.ReductionTupleResult;
-import de.topicmapslab.tmql4j.resultprocessing.core.simple.SimpleResultSet;
-import de.topicmapslab.tmql4j.resultprocessing.core.simple.SimpleTupleResult;
-import de.topicmapslab.tmql4j.resultprocessing.model.IResult;
+import com.esotericsoftware.yamlbeans.YamlConfig;
+import com.esotericsoftware.yamlbeans.YamlException;
+import com.esotericsoftware.yamlbeans.YamlWriter;
+import de.topicmapslab.majortom.remoting.contracts.dto.tmdm.*;
+import de.topicmapslab.majortom.remoting.converter.dto.tmdm.QueryConverter;
 import de.topicmapslab.tmql4j.resultprocessing.model.IResultSet;
-import org.tmapi.core.*;
 
 import java.io.PrintStream;
-import java.util.Set;
+import java.io.StringWriter;
 
 /**
  * User: mhoyer
@@ -20,187 +17,61 @@ import java.util.Set;
  */
 public class TMQLResultYTMWriter {
     private PrintStream output;
-    private int indention;
-    private String indent = "";
-    private boolean isInLine = true;
+    private QueryConverter queryConverter;
+    private YamlWriter yamlWriter;
+    private StringWriter yamlOutput;
 
     public TMQLResultYTMWriter(PrintStream outputStream) {
-        this.output = outputStream;
+        output = outputStream;
+        queryConverter = new QueryConverter();
     }
 
     public void write(IResultSet<?> resultSet)
     {
-        indention = 0;
+        QueryResultDTO[] result = queryConverter.convert(resultSet);
 
-        Class<? extends IResult> resultType = resultSet.getResultClass();
-        if (ReductionTupleResult.class.isAssignableFrom(resultType)) {
-            writeResultSet(ReductionResultSet.class.cast(resultSet));
-        }
-        else if (SimpleTupleResult.class.isAssignableFrom(resultType)) {
-            writeResultSet(SimpleResultSet.class.cast(resultSet));
-        }
-        else { System.err.println(String.format("%s is not supported", resultType.getName())); }
-    }
-
-    private void writeResultSet(SimpleResultSet simpleResultSet) {
-        for(SimpleTupleResult tuple : simpleResultSet.getResults())
-        {
-            writeSimpleTupleResult(tuple);
+        try {
+            initYamlWriter();
+            yamlWriter.write(result);
+            yamlWriter.close();
+            output.println(yamlOutput.toString());
+        } catch (YamlException e) {
+            e.printStackTrace();
         }
     }
 
-    private void writeSimpleTupleResult(SimpleTupleResult results)
+    public void write(ConstructDTO construct)
     {
-        put("- ");
-
-        indent();
-        for(Object result : results.getResults())
-        {
-            if (result instanceof Topic) {
-                writeTopic((Topic) result);
-            } else if (result instanceof Variant) {
-                writeVariant((Variant) result);
-            } else if (result instanceof Name) {
-                writeName((Name) result);
-            } else if (result instanceof Association) {
-                writeAssociation((Association) result);
-            } else if (result instanceof Occurrence) {
-                writeOccurrence((Occurrence) result);
-            } else if (result instanceof String) {
-                writeString((String) result);
-            } else if (result instanceof Locator) {
-                writeLocator((Locator) result);
-            } else if (result instanceof SimpleTupleResult) {
-                puts("set:");
-                indent();
-                writeSimpleTupleResult((SimpleTupleResult) result);
-                unindent();
-            } else {
-                System.err.println("Missing writer for " + result.getClass().getName());
-            }
+        try {
+            initYamlWriter();
+            yamlWriter.write(construct);
+            yamlWriter.close();
+            output.println(yamlOutput.toString());
+        } catch (YamlException e) {
+            e.printStackTrace();
         }
-        unindent();
     }
 
-    private void writeTopic(Topic topic) {
-        String ref = topicRef(topic);
-        puts("topic       : %s", ref);
-    }
-
-    private void writeName(Name name) {
-        puts("name        : { value: \"%s\", type: <%s> }", name.getValue(), topicRef(name.getType()));
-
-        indent();
-        {
-            writeScope(name);
+    public void close()
+    {
+        if (yamlWriter != null) try {
+            yamlWriter.close();
+        } catch (YamlException e) {
+            e.printStackTrace();
         }
-        unindent();
     }
 
-    private void writeScope(Scoped scoped) {
-        if (scoped.getScope().size() == 0) return;
-        String themes = "";
-        for(Topic theme : scoped.getScope())
-        {
-            if (!themes.isEmpty()) themes = ", ".concat(themes);
-            themes.concat(topicRef(theme));
-        }
-        puts("scope: [%s]", themes);
+    private void initYamlWriter() {
+        yamlOutput = new StringWriter();
+        yamlWriter = new YamlWriter(yamlOutput);
+
+        YamlConfig yamlConfig = yamlWriter.getConfig();
+        yamlConfig.setClassTag("TopicMap", TopicMapDTO.class);
+        yamlConfig.setClassTag("Topic", TopicDTO.class);
+        yamlConfig.setClassTag("Occurrence", OccurrenceDTO.class);
+        yamlConfig.setClassTag("Name", NameDTO.class);
+        yamlConfig.setClassTag("Variant", VariantDTO.class);
+        yamlConfig.setClassTag("Association", AssociationDTO.class);
+        yamlConfig.setClassTag("Role", RoleDTO.class);
     }
-
-    private void writeAssociation(Association association) {
-        puts("association : %s", topicRef(association.getType()));
-    }
-
-    private void writeOccurrence(Occurrence occurrence) {
-        puts("occurrence  :");
-
-        indent();
-        {
-            String datatype = occurrence.getDatatype().getReference();
-
-            if (datatype.equals(XmlSchemeDatatypes.XSD_STRING) ||
-                    datatype.equals(XmlSchemeDatatypes.XSD_ANY) ||
-                    datatype.equals(XmlSchemeDatatypes.XSD_ANYURI) ||
-                    datatype.equals(XmlSchemeDatatypes.XSD_QSTRING) ||
-                    datatype.equals(XmlSchemeDatatypes.XSD_QANY) ||
-                    datatype.equals(XmlSchemeDatatypes.XSD_QANYURI)) {
-
-                puts("value       : \"%s\"", occurrence.getValue());
-            } else {
-                puts("value       : %s [%s]", occurrence.getValue());
-            }
-
-            puts("type        : %s", topicRef(occurrence.getType()));
-            puts("datatype    : %s", datatype.replaceAll("http://www\\.w3\\.org/2001/XMLSchema#", ""));
-        }
-        unindent();
-    }
-
-    private void writeString(String value) {
-        puts("\"%s\"", value);
-    }
-
-    private void writeLocator(Locator locator) {
-        puts(locator.getReference());
-    }
-
-    private void writeVariant(Variant variant) {
-        puts("variant     : \"%s\"", variant.getValue());
-    }
-
-    private void puts(String value, Object... args) {
-        output.println(withIndention(value, args));
-        isInLine = false;
-    }
-
-    private void put(String value, Object... args) {
-        output.print(withIndention(String.format(value, args)));
-        isInLine = true;
-    }
-
-    private String withIndention(String value, Object... args) {
-        if(isInLine) {
-            return String.format(value, args);
-        }
-
-        return String.format(indent.concat(value), args);
-    }
-
-    private void indent() {
-        indent = indent.concat("  ");
-        indention++;
-    }
-    private void unindent() {
-        indention--;
-        if (!indent.isEmpty()) indent = indent.substring(2);
-    }
-
-    /**
-	 * Returns an IRI which is usable to as reference to the specified topic.
-	 *
-	 * Modified version of JTMTopicMapWriter#_topicRef from Lars Heuer
-	 * (heuer[at]semagia.com)
-	 *
-	 * @param topic
-	 *            The topic.
-	 * @return An IRI.
-	 */
-	private String topicRef(Topic topic) {
-		Set<Locator> locs = topic.getSubjectIdentifiers();
-		if (!locs.isEmpty()) {
-			return "si:" + locs.iterator().next().toExternalForm();
-		}
-
-		locs = topic.getSubjectLocators();
-		if (!locs.isEmpty()) {
-			return "sl:" + locs.iterator().next().toExternalForm();
-		}
-
-        locs = topic.getItemIdentifiers();
-        if (locs.isEmpty())
-            throw new TMQLRuntimeException("Topic " + topic + " has no SI nor SL nor an II, thus violates the TMDM");
-
-        return "ii:" + locs.iterator().next().toExternalForm();
-	}
 }
