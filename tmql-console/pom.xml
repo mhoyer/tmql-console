@@ -100,7 +100,7 @@
         <dependency>
             <groupId>de.topicmapslab.majortom</groupId>
             <artifactId>majortom-inMemory</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.topicmapslab.tmql4j</groupId>
