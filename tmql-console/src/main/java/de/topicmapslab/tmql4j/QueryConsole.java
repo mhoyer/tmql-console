@@ -56,10 +56,12 @@ public class QueryConsole {
         else tmReader = new XTMTopicMapReader(topicMap, topicMapFile);
 
         tmReader.read();
-        SimpleClient.puts("done!\n  * Topics: %d\n  * Associations: %d\n", topicMap.getTopics().size(), topicMap.getAssociations().size());
+        SimpleClient.puts("done!\n");
     }
 
     public void open() throws IOException {
+        SimpleClient.puts("Enter '?' for help.");
+
         InputStreamReader converter = new InputStreamReader(System.in);
         BufferedReader in = new BufferedReader(converter);
 
@@ -69,7 +71,13 @@ public class QueryConsole {
             SimpleClient.put("%s %s ", prefix, q.isEmpty() ? ">" : "|");
             
             String line = in.readLine();
-            if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")) break;
+
+            if (q.isEmpty()) {
+                String trimedLine = line.trim();
+                if (trimedLine.matches("(e|exit|q|uit)")) break;
+                if (trimedLine.matches("(\\?|h|help)")) { printCommands(); continue; }
+                if (trimedLine.matches("(s|stats)")) { printStats(); continue; }
+            }
 
             q = q.concat(line);
             if (!line.trim().endsWith(";")) continue;
@@ -79,6 +87,10 @@ public class QueryConsole {
 
             q = "";
         }
+    }
+
+    private void printStats() {
+        SimpleClient.puts("  * Topics: %d\n  * Associations: %d\n", topicMap.getTopics().size(), topicMap.getAssociations().size());
     }
 
     public void runQuery(String q)
@@ -93,7 +105,15 @@ public class QueryConsole {
         {
             System.out.println(ex.toString());
         }
+    }
 
+    public void printCommands()
+    {
+        SimpleClient.puts("%20s  %s", "h(elp)|?", "Shows this screen");
+        SimpleClient.puts("%20s  %s", "e(xit)|q(uit)", "Exits the console");
+        SimpleClient.puts("%20s  %s", "s(tats)", "Shows the statistics for loaded Topic Map");
+
+        SimpleClient.puts("\n%s",   "An entered query should be finalized with ; to execute it.\n");
     }
 
 }
