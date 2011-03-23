@@ -40,15 +40,8 @@ public class ResultInterpreter {
 
     private void printComplexResults(IQuery query) {
         IResultSet<?> set = query.getResults();
+        new TMQLResultYTMWriter(outputStream).write(set);
 
         outputStream.println(String.format("Found: %d results", set.size()));
-
-        for (IResult result : set) {
-            outputStream.print("| ");
-            for (Object item : result) {
-                outputStream.print(item.toString() + " | ");
-            }
-            outputStream.println();
-        }
     }
 }
