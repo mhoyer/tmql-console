@@ -7,7 +7,7 @@ import java.io.File;
  * Date: 08.09.2010
  * Time: 11:47:58
  */
-public class SimpleClient {
+public class Application {
     public static void main(String[] args)
     {
         puts("TMQL4J Simple Client");
@@ -40,7 +40,7 @@ public class SimpleClient {
 
     public static void showHelp()
     {
-        puts("Usage: SimpleClient <Path-to-TopicMap-file> [<TMQL Query>]");
+        puts("Usage: TMQLConsole <Path-to-TopicMap-file> [<TMQL Query>]");
     }
 
     public static void puts(String message, Object... args)

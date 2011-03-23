@@ -38,7 +38,7 @@ public class QueryConsole {
     }
 
     private void importTopicMap(File topicMapFile) throws TMAPIException, IOException {
-        SimpleClient.put("Importing %s ...", topicMapFile.getName());
+        Application.put("Importing %s ...", topicMapFile.getName());
         String fileName = topicMapFile.getName().toLowerCase();
 
         topicMapSystem = TopicMapSystemFactory.newInstance()
@@ -56,11 +56,11 @@ public class QueryConsole {
         else tmReader = new XTMTopicMapReader(topicMap, topicMapFile);
 
         tmReader.read();
-        SimpleClient.puts("done!\n");
+        Application.puts("done!\n");
     }
 
     public void open() throws IOException {
-        SimpleClient.puts("Enter '?' for help.");
+        Application.puts("Enter '?' for help.");
 
         InputStreamReader converter = new InputStreamReader(System.in);
         BufferedReader in = new BufferedReader(converter);
@@ -68,7 +68,7 @@ public class QueryConsole {
         String q = "";
         while(true)
         {
-            SimpleClient.put("%s %s ", prefix, q.isEmpty() ? ">" : "|");
+            Application.put("%s %s ", prefix, q.isEmpty() ? ">" : "|");
             
             String line = in.readLine();
 
@@ -90,7 +90,7 @@ public class QueryConsole {
     }
 
     private void printStats() {
-        SimpleClient.puts("  * Topics: %d\n  * Associations: %d\n", topicMap.getTopics().size(), topicMap.getAssociations().size());
+        Application.puts("  * Topics: %d\n  * Associations: %d\n", topicMap.getTopics().size(), topicMap.getAssociations().size());
     }
 
     public void runQuery(String q)
@@ -109,11 +109,11 @@ public class QueryConsole {
 
     public void printCommands()
     {
-        SimpleClient.puts("%20s  %s", "h(elp)|?", "Shows this screen");
-        SimpleClient.puts("%20s  %s", "e(xit)|q(uit)", "Exits the console");
-        SimpleClient.puts("%20s  %s", "s(tats)", "Shows the statistics for loaded Topic Map");
+        Application.puts("%20s  %s", "h(elp)|?", "Shows this screen");
+        Application.puts("%20s  %s", "e(xit)|q(uit)", "Exits the console");
+        Application.puts("%20s  %s", "s(tats)", "Shows the statistics for loaded Topic Map");
 
-        SimpleClient.puts("\n%s",   "An entered query should be finalized with ; to execute it.\n");
+        Application.puts("\n%s",   "An entered query should be finalized with ; to execute it.\n");
     }
 
 }
