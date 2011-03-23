@@ -27,8 +27,14 @@ public class Application {
         try {
             QueryConsole console = new QueryConsole(System.out, topicMapFile);
 
-            if (args.length == 2) {
-                console.runQuery(args[1]);
+            if (args.length > 1) {
+                String query = "";
+                for(int i=1; i < args.length; i++)
+                {
+                    query = query.concat(args[i]) + " ";
+                }
+                
+                console.runQuery(query);
             }
             else {
                 console.open();
