@@ -49,7 +49,8 @@
 									<directory>src/main/resources</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>tmql.sh</include>
+                                        <include>tmql.sh</include>
+                                        <include>tmql.cmd</include>
 									</includes>
 								</resource>
 							</resources>
