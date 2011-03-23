@@ -134,7 +134,7 @@ public class QueryConsole {
                 if (trimedLine.matches("(s|stats)")) { printStats(); continue; }
             }
 
-            q = q.concat(line);
+            q = q.concat(line + "\n");
             if (!line.trim().endsWith(";")) continue;
 
             if (q.trim().length() > 1) {           
